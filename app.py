@@ -58,11 +58,9 @@ def add_task():
         return redirect(url_for('index'))
 
     # --- Machine Learning Integration ---
-    # 1. Predict the priority of the new task content
     predicted_p = predict_priority(task_content)
-    # ------------------------------------
 
-    # 2. Create the new task with the *suggested* priority
+    # Create the new task with the *suggested* priority
     new_task = Task(content=task_content, suggested_priority=int(predicted_p))
     
     try:
@@ -74,6 +72,26 @@ def add_task():
         
     return redirect(url_for('index'))
 
+# --- NEW FUNCTION TO FIX THE ERROR ---
+@app.route('/edit/<int:id>', methods=['POST'])
+def edit_task(id):
+    """Handles editing an existing task."""
+    task = Task.query.get_or_404(id)
+    new_content = request.form['content']
+    
+    if not new_content:
+        flash("Task content cannot be empty!", "error")
+    else:
+        task.content = new_content
+        try:
+            db.session.commit()
+            flash("Task updated successfully!", "success")
+        except Exception as e:
+            flash(f"Error updating task: {e}", "error")
+            
+    return redirect(url_for('index'))
+# ------------------------------------
+
 @app.route('/set_priority/<int:id>', methods=['POST'])
 def set_priority(id):
     """
@@ -82,10 +100,7 @@ def set_priority(id):
     """
     task = Task.query.get_or_404(id)
     
-    # Get the priority from the form button (e.g., <button name="priority" value="3">High</button>)
     new_priority = request.form['priority']
-    
-    # This is the "label" (y) our model will learn from
     task.user_priority = int(new_priority)
     
     try:
@@ -113,10 +128,7 @@ def delete_task(id):
 # --- Model Training Route ---
 @app.route('/retrain-model')
 def trigger_training():
-    """
-    A special (un-linked) route to trigger the model retraining.
-    In a real app, you would secure this or run it on a schedule.
-    """
+    """A special route to trigger the model retraining."""
     try:
         message = train_model()
         flash(message, "success")
@@ -127,7 +139,6 @@ def trigger_training():
 
 # --- Main Entry Point ---
 if __name__ == "__main__":
-    # Create the database file if it doesn't exist
     if not os.path.exists('todos.db'):
         with app.app_context():
             db.create_all()

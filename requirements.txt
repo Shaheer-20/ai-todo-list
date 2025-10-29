@@ -1,0 +1,5 @@
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+scikit-learn==1.5.1
+pandas==2.2.2 # Already present
+numpy==1.26.4 # Ensure numpy is present for scikit-learn

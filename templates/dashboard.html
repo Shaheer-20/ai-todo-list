@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI To-Do List Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --background-color: #f7f8fc;
+            --container-bg: #ffffff;
+            --text-color: #333;
+            --border-color: #eef0f4;
+            --high-p-bg: #ffebee; --high-p-text: #c62828;
+            --medium-p-bg: #fff8e1; --medium-p-text: #f57f17;
+            --low-p-bg: #e3f2fd; --low-p-text: #1565c0;
+        }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--background-color); margin: 0; padding: 20px; color: var(--text-color); line-height: 1.6; }
+        .container { max-width: 900px; margin: 20px auto; background: var(--container-bg); border-radius: 12px; box-shadow: 0 4px 25px rgba(0,0,0,0.07); overflow: hidden; }
+        header { padding: 25px 30px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        h1 { margin: 0; font-weight: 700; font-size: 28px; color: var(--primary-color); }
+        .back-link { text-decoration: none; color: var(--primary-color); font-weight: 500; padding: 8px 15px; border: 1px solid var(--primary-color); border-radius: 8px; transition: all 0.2s ease; }
+        .back-link:hover { background-color: var(--primary-color); color: white; }
+        .content { padding: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        .card { background-color: #fdfdff; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
+        .card h2 { margin-top: 0; font-size: 20px; color: #555; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; }
+        .metric-value { font-size: 36px; font-weight: 700; color: var(--primary-color); text-align: center; margin: 20px 0; }
+        .confusion-matrix table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
+        .confusion-matrix th, .confusion-matrix td { border: 1px solid var(--border-color); padding: 10px; text-align: center; }
+        .confusion-matrix th { background-color: #eef0f4; font-weight: 500; color: #555; }
+        .confusion-matrix td { background-color: #fdfdff; }
+        .confusion-matrix .label-col { text-align: left; font-weight: 500; }
+        .chart-container { position: relative; height: 250px; width: 100%; }
+        .no-data-message { text-align: center; color: #888; padding: 20px; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 AI Model Dashboard</h1>
+            <a href="{{ url_for('index') }}" class="back-link">Back to To-Do List</a>
+        </header>
+        <div class="content">
+            <div class="card">
+                <h2>Model Accuracy</h2>
+                <p class="metric-value">{{ (metrics.accuracy * 100) | round(2) if metrics.accuracy else 0 }}%</p>
+            </div>
+            <div class="card">
+                <h2>Priority Distribution (True)</h2>
+                <div class="chart-container">
+                    <canvas id="priorityDistributionChart"></canvas>
+                </div>
+            </div>
+            <div class="card confusion-matrix" style="grid-column: 1 / -1;">
+                <h2>Confusion Matrix</h2>
+                {% if metrics.confusion_matrix %}
+                <table>
+                    <thead>
+                        <tr><th></th><th colspan="3">Predicted</th></tr>
+                        <tr><th>True</th><th>Low</th><th>Medium</th><th>High</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="label-col">Low</td><td>{{ metrics.confusion_matrix[0][0] }}</td><td>{{ metrics.confusion_matrix[0][1] }}</td><td>{{ metrics.confusion_matrix[0][2] }}</td></tr>
+                        <tr><td class="label-col">Medium</td><td>{{ metrics.confusion_matrix[1][0] }}</td><td>{{ metrics.confusion_matrix[1][1] }}</td><td>{{ metrics.confusion_matrix[1][2] }}</td></tr>
+                        <tr><td class="label-col">High</td><td>{{ metrics.confusion_matrix[2][0] }}</td><td>{{ metrics.confusion_matrix[2][1] }}</td><td>{{ metrics.confusion_matrix[2][2] }}</td></tr>
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="no-data-message">No data available to generate confusion matrix.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <script>
+        const metrics = JSON.parse({{ metrics_json | tojson }});
+        if (metrics.priority_counts && Object.keys(metrics.priority_counts).length > 0) {
+            const ctx = document.getElementById('priorityDistributionChart').getContext('2d');
+            const labels = ['Low', 'Medium', 'High'];
+            const data = labels.map((_, i) => metrics.priority_counts[i + 1] || 0);
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Number of Tasks',
+                        data: data,
+                        backgroundColor: ['rgba(21, 101, 192, 0.6)', 'rgba(245, 127, 23, 0.6)', 'rgba(198, 40, 40, 0.6)'],
+                        borderColor: ['rgba(21, 101, 192, 1)', 'rgba(245, 127, 23, 1)', 'rgba(198, 40, 40, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        } else {
+            const chartCard = document.getElementById('priorityDistributionChart').closest('.card');
+            chartCard.innerHTML += '<p class="no-data-message">No data for priority distribution.</p>';
+            chartCard.querySelector('.chart-container').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

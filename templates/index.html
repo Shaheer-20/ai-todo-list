@@ -6,7 +6,7 @@
     <title>Smart To-Do List</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-color: #4a90e2;
@@ -18,161 +18,68 @@
             --medium-p-bg: #fff8e1; --medium-p-text: #f57f17;
             --low-p-bg: #e3f2fd; --low-p-text: #1565c0;
         }
-        body { font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--background-color); margin: 0; padding: 20px; color: var(--text-color); }
+        body { font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background-color: var(--background-color); margin: 0; padding: 20px; color: var(--text-color); }
         .container { max-width: 700px; margin: 20px auto; background: var(--container-bg); border-radius: 12px; box-shadow: 0 4px 25px rgba(0,0,0,0.07); overflow: hidden; }
         header { padding: 25px 30px; border-bottom: 1px solid var(--border-color); }
-        h1 { margin: 0; font-weight: 600; font-size: 24px; }
+        h1 { margin: 0; font-weight: 500; font-size: 24px; }
         .content { padding: 30px; }
-        
-        /* Flash Messages */
         .flash { padding: 15px; margin-bottom: 20px; border-radius: 4px; font-weight: bold; }
         .flash.success { background-color: #e6f7ec; color: #2e7d32; }
         .flash.error { background-color: var(--high-p-bg); color: var(--high-p-text); }
         .flash.info { background-color: var(--low-p-bg); color: var(--low-p-text); }
-
-        /* Add Task Form */
         form.add-task { display: flex; margin-bottom: 20px; }
-        form.add-task input[type="text"] { flex-grow: 1; padding: 12px 15px; border: 1px solid var(--border-color); border-radius: 6px 0 0 6px; font-size: 16px; font-family: 'Poppins', sans-serif; background: #fdfdff; }
+        form.add-task input[type="text"] { flex-grow: 1; padding: 12px 15px; border: 1px solid var(--border-color); border-radius: 6px 0 0 6px; font-size: 16px; font-family: 'Roboto', sans-serif; background: #fdfdff; }
         form.add-task input[type="text"]:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2); }
-        
-        /* Task List */
         .task-list { list-style: none; padding: 0; margin: 0; }
         .task-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--border-color); gap: 15px; }
         .task-item:last-child { border-bottom: none; }
         .task-content { flex-grow: 1; font-size: 15px; line-height: 1.5; }
-        .task-priority-badge { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 12px; margin-right: 12px; text-transform: uppercase; letter-spacing: 0.5px; vertical-align: middle; }
-        .priority-3 { background-color: var(--high-p-bg); color: var(--high-p-text); } /* High */
-        .priority-3 { background-color: var(--high-p-bg); color: var(--high-p-text); } /* High */ 
-        .priority-2 { background-color: var(--medium-p-bg); color: var(--medium-p-text); } /* Medium */
-        .priority-1 { background-color: var(--low-p-bg); color: var(--low-p-text); } /* Low */
+        .task-priority-badge { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 12px; margin-right: 12px; text-transform: uppercase; letter-spacing: 0.5px; vertical-align: middle; }
+        .priority-3 { background-color: var(--high-p-bg); color: var(--high-p-text); }
+        .priority-2 { background-color: var(--medium-p-bg); color: var(--medium-p-text); }
+        .priority-1 { background-color: var(--low-p-bg); color: var(--low-p-text); }
         .task-actions { display: flex; align-items: center; flex-shrink: 0; gap: 8px; }
-        .task-actions .priority-select {
-            font-family: 'Poppins', sans-serif;
-            font-size: 12px;
-            padding: 5px 8px;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            background-color: var(--container-bg);
-            cursor: pointer;
-        }
+        .task-actions .priority-select { font-family: 'Roboto', sans-serif; font-size: 12px; padding: 5px 8px; border: 1px solid var(--border-color); border-radius: 5px; background-color: var(--container-bg); cursor: pointer; }
         .task-actions .priority-select:focus { outline: 1px solid var(--primary-color); }
-        
-        /* Edit form styles */
         .edit-form { display: none; width: 100%; flex-grow: 1; }
-        .edit-form input[type="text"] { width: 100%; padding: 8px; border: 1px solid var(--primary-color); border-radius: 4px; font-family: 'Poppins', sans-serif; font-size: 15px; }
+        .edit-form input[type="text"] { width: 100%; padding: 8px; border: 1px solid var(--primary-color); border-radius: 4px; font-family: 'Roboto', sans-serif; font-size: 15px; }
         .edit-form .edit-actions { margin-top: 8px; display: flex; justify-content: flex-end; gap: 8px; }
         .edit-form button { font-size: 12px; padding: 5px 10px; border-radius: 4px; cursor: pointer; border: 1px solid var(--border-color); }
         .edit-form .btn-save { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
         .edit-form .btn-cancel { background-color: #f0f0f0; }
         .task-item.editing .task-content, .task-item.editing .task-actions { display: none; }
         .task-item.editing .edit-form { display: block; }
-
-        /* === START: ANIMATION STYLES === */
-
-        /* General Button Transitions for smoothness */
-        form.add-task button, .task-actions button {
-            transition: all 0.3s ease;
-        }
-        
-        /* Add Task Button */
+        form.add-task button, .task-actions button { transition: all 0.3s ease; }
         form.add-task button { padding: 12px 20px; border: none; background: var(--primary-color); color: white; font-size: 16px; border-radius: 0 6px 6px 0; cursor: pointer; font-weight: 500; }
-        
-        /* 1. Hover State: Lift and Glow */
-        form.add-task button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
-        }
-
-        /* 2. Active/Click State: Press Down */
-        form.add-task button:active {
-            transform: translateY(0px) scale(0.98);
-            box-shadow: 0 2px 6px rgba(74, 144, 226, 0.3);
-        }
-
-        /* 3. Success State: Transform to Checkmark */
-        form.add-task button.success {
-            width: 49px; /* Match height for a circle */
-            background-color: #2e7d32;
-            border-radius: 50%;
-        }
-
-        /* Hide text during success animation */
-        form.add-task button.success span {
-            display: none;
-        }
-
-        /* Create the checkmark */
-        form.add-task button.success::after {
-            content: '✔';
-            color: white;
-            font-size: 20px;
-            display: block;
-        }
-
-        /* Delete Button */
-        .task-actions .btn-delete {
-            text-decoration: none; font-size: 12px; padding: 6px 10px; border: 1px solid #e57373;
-            background: var(--container-bg); color: #c62828; border-radius: 5px; cursor: pointer;
-        }
-        
-        /* 1. Hover State: Fill color and scale up */
-        .task-actions .btn-delete:hover {
-            background: #c62828;
-            color: #fff;
-            transform: scale(1.05);
-        }
-
-        /* 2. Active/Click State: Press down */
-        .task-actions .btn-delete:active {
-            transform: scale(1);
-            transition-duration: 0.1s;
-        }
-
-        .task-actions .btn-edit {
-            text-decoration: none; font-size: 12px; padding: 6px 10px; border: 1px solid var(--border-color);
-            background: var(--container-bg); color: #555; border-radius: 5px; cursor: pointer;
-        }
+        form.add-task button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4); }
+        form.add-task button:active { transform: translateY(0px) scale(0.98); box-shadow: 0 2px 6px rgba(74, 144, 226, 0.3); }
+        form.add-task button.success { width: 49px; background-color: #2e7d32; border-radius: 50%; }
+        form.add-task button.success span { display: none; }
+        form.add-task button.success::after { content: '✔'; color: white; font-size: 20px; display: block; }
+        .task-actions .btn-delete { text-decoration: none; font-size: 12px; padding: 6px 10px; border: 1px solid #e57373; background: var(--container-bg); color: #c62828; border-radius: 5px; cursor: pointer; }
+        .task-actions .btn-delete:hover { background: #c62828; color: #fff; transform: scale(1.05); }
+        .task-actions .btn-delete:active { transform: scale(1); transition-duration: 0.1s; }
+        .task-actions .btn-edit { text-decoration: none; font-size: 12px; padding: 6px 10px; border: 1px solid var(--border-color); background: var(--container-bg); color: #555; border-radius: 5px; cursor: pointer; }
         .task-actions .btn-edit:hover { background: #f0f0f0; }
-
-        /* === END: ANIMATION STYLES === */
-        
-        /* Training Link */
         .retrain-link { display: block; text-align: center; margin-top: 30px; padding: 12px; background: #f0f0f0; border-radius: 6px; color: #555; text-decoration: none; font-weight: 500; transition: background-color 0.2s; }
         .retrain-link:hover { background: #e6e6e6; }
-
-        /* Responsive Design */
         @media (max-width: 600px) {
             body { padding: 0; }
             .container { margin: 0; border-radius: 0; box-shadow: none; max-width: 100%; }
             header, .content { padding: 20px 15px; }
             h1 { font-size: 20px; }
-            .task-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-            .task-actions {
-                width: 100%;
-                justify-content: flex-end; /* Aligns dropdown and button to the right */
-            }
+            .task-item { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .task-actions { width: 100%; justify-content: flex-end; }
         }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <header>
-            <h1>🧠 Smart To-Do List</h1>
-        </header>
-
+        <header><h1>🧠 Smart To-Do List</h1></header>
         <div class="content">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="flash {{ category }}">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
+            {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}
+                {% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}
+            {% endif %}{% endwith %}
 
             <form action="{{ url_for('add_task') }}" method="POST" class="add-task">
                 <input type="text" name="content" placeholder="Enter a new task..." autofocus>
@@ -181,26 +88,16 @@
 
             <h2>Your Tasks</h2>
             <ul class="task-list">
-                {% if not tasks %}
-                    <li>No tasks yet. Add one!</li>
-                {% endif %}
-
+                {% if not tasks %}<li>No tasks yet. Add one!</li>{% endif %}
                 {% for task in tasks %}
                     <li class="task-item">
                         <div class="task-content">
                             {% set final_priority = task.user_priority or task.suggested_priority %}
-                            
-                            <span class="task-priority-badge priority-{{ final_priority }}">
-                                {{ get_priority_name(final_priority) }}
-                                {% if task.user_priority is none %}
-                                    (Suggested)
-                                {% endif %}
-                            </span>
-                            </span><span class="task-text" style="display:none;">{{ task.content }}</span>
-                            {{ task.content }}
+                            <span class="task-priority-badge priority-{{ final_priority }}">{{ get_priority_name(final_priority) }}{% if task.user_priority is none %} (Suggested){% endif %}</span>
+                            <span class="task-text">{{ task.content }}</span>
                         </div>
-                        
                         <div class="task-actions">
+                            <button class="btn-edit">Edit</button>
                             <form action="{{ url_for('set_priority', id=task.id) }}" method="POST">
                                 <select name="priority" class="priority-select" onchange="this.form.submit()">
                                     <option value="3" {% if final_priority == 3 %}selected{% endif %}>High</option>
@@ -208,13 +105,10 @@
                                     <option value="1" {% if final_priority == 1 %}selected{% endif %}>Low</option>
                                 </select>
                             </form>
-                            <button class="btn-edit" data-task-id="{{ task.id }}">Edit</button>
-                            
                             <form action="{{ url_for('delete_task', id=task.id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
                                 <button type="submit" class="btn-delete">Delete</button>
                             </form>
                         </div>
-
                         <div class="edit-form">
                             <form action="{{ url_for('edit_task', id=task.id) }}" method="POST">
                                 <input type="text" name="content" value="{{ task.content }}">
@@ -228,51 +122,42 @@
                 {% endfor %}
             </ul>
 
-            <a href="{{ url_for('trigger_training') }}" class="retrain-link">
-                Manually Retrain AI Model
+            <a href="{{ url_for('dashboard') }}" class="retrain-link" style="margin-bottom: 10px; background-color: #e3f2fd; color: #1565c0; border: 1px solid #1565c0;">
+                📊 View AI Model Dashboard
             </a>
+            <a href="{{ url_for('trigger_training') }}" class="retrain-link">Manually Retrain AI Model</a>
         </div>
     </div>
 
     <script>
         const addTaskForm = document.querySelector('form.add-task');
-        const addTaskButton = addTaskForm.querySelector('button');
-
-        addTaskForm.addEventListener('submit', function(event) {
-            const taskInput = addTaskForm.querySelector('input[name="content"]');
-            if (taskInput.value.trim() !== '') {
-                addTaskButton.classList.add('success');
-                addTaskButton.disabled = true;
-
-                // We don't prevent the form submission, but we revert the button style
-                // after a short delay so it's ready for the next task after the page reloads.
-                // A longer timeout can feel more satisfying.
-                setTimeout(() => {
-                    addTaskButton.classList.remove('success');
-                    addTaskButton.disabled = false;
-                }, 1500);
-            }
-        });
-
-        // --- Inline Edit Logic ---
+        if (addTaskForm) {
+            const addTaskButton = addTaskForm.querySelector('button');
+            addTaskForm.addEventListener('submit', function(event) {
+                const taskInput = addTaskForm.querySelector('input[name="content"]');
+                if (taskInput.value.trim() !== '') {
+                    addTaskButton.classList.add('success');
+                    addTaskButton.disabled = true;
+                    setTimeout(() => {
+                        addTaskButton.classList.remove('success');
+                        addTaskButton.disabled = false;
+                    }, 1500);
+                }
+            });
+        }
         document.querySelectorAll('.btn-edit').forEach(button => {
             button.addEventListener('click', function() {
                 const taskItem = this.closest('.task-item');
                 taskItem.classList.add('editing');
-                
-                // Focus the input field
                 const input = taskItem.querySelector('.edit-form input[type="text"]');
                 input.focus();
-                input.select(); // Select all text
+                input.select();
             });
         });
-
         document.querySelectorAll('.btn-cancel').forEach(button => {
             button.addEventListener('click', function() {
                 const taskItem = this.closest('.task-item');
                 taskItem.classList.remove('editing');
-
-                // Optional: Reset input value to original if user made changes then cancelled
                 const originalText = taskItem.querySelector('.task-text').innerText;
                 taskItem.querySelector('.edit-form input[type="text"]').value = originalText;
             });
